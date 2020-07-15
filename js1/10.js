@@ -15,10 +15,26 @@
  * @param {string} str
  * @param {function} fun
  * @returns {function}
+ * 
+fun = solution('hel2', (e) => {
+  console.log(e)
+})
+fun() // prints-> 'h'
+fun() // prints-> 'e'
+fun() // prints-> 'l'
+fun() // prints-> '2'
+fun() // prints-> 'h'
+fun() // prints-> 'e'
  */
 
 const solution = (str, fun) => {
-  return () => { }
+  let i = 0
+  return () => {
+    fun(str[i])
+    i++
+    if(i === str.length)
+      i = 0
+   }
 }
 
 module.exports = {
