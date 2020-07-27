@@ -13,9 +13,7 @@ const solution = (fun, i = 0, array = []) => {
     array.push(i)
     return solution(fun, i + 1, array)
   }
-  if(fun(i)){
-    return array
-  }
+  return array
 }
 
 module.exports = {
