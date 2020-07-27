@@ -10,8 +10,16 @@
  * @returns {array}
  */
 
-const solution = (row, col) => {
-  return []
+const solution = (row, col, rowArr=[], colArr=[], i = 0, j = 0) => {
+  if(i < row){
+    if(j < col) {
+      colArr.push(0)
+      return solution(row, col, rowArr, colArr, i, j + 1)
+    }
+    rowArr.push(colArr)
+    return solution(row, col, rowArr, colArr, i + 1, j)
+  }
+  return rowArr
 }
 
 module.exports = {
