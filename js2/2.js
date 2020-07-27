@@ -11,11 +11,11 @@
 const solution = (fun, i = 0, array = []) => {
   if(!fun(i)){
     array.push(i)
+    return solution(fun, i + 1, array)
   }
   if(fun(i)){
     return array
   }
-  return solution(fun, i + 1, array)
 }
 
 module.exports = {
