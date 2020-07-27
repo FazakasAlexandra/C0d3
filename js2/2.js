@@ -8,8 +8,14 @@
  * @returns {array}
  */
 
-const solution = (fun) => {
-  return []
+const solution = (fun, i = 0, array = []) => {
+  if(!fun(i)){
+    array.push(i)
+  }
+  if(fun(i)){
+    return array
+  }
+  return solution(fun, i + 1, array)
 }
 
 module.exports = {
