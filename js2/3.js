@@ -10,16 +10,20 @@
  * @returns {array}
  */
 
-const solution = (row, col, rowArr=[], colArr=[], i = 0, j = 0) => {
-  if(i < row){
-    if(j < col) {
-      colArr.push(0)
-      return solution(row, col, rowArr, colArr, i, j + 1)
-    }
-    rowArr.push(colArr)
-    return solution(row, col, rowArr, colArr, i + 1, j)
+function getColArr(col, colArr = []){
+  if(colArr.length < col){
+    colArr.push(0)
+    return getColArr(col, colArr)
   }
-  return rowArr
+  return colArr
+}
+
+const solution = (row, col, arr = []) => {
+  if(arr.length < row){
+    arr[arr.length] = getColArr(col)
+    return solution(row, col, arr)
+  }
+  return arr
 }
 
 module.exports = {
