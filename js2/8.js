@@ -5,8 +5,13 @@
  */
 
 const solution = () => {
-  Array.prototype.cMap = function (cb) {
-    return 0
+  Array.prototype.cMap = function (cb, i = 0, copyArr = []) {
+    if(i === this.length){
+      return copyArr
+    }
+    let el = cb(this[i], i, this)
+    copyArr.push(el)
+    return this.cMap(cb, i + 1, copyArr)
   }
 }
 
