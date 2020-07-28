@@ -9,8 +9,8 @@ const solution = () => {
     if (i === this.length) {
       return result
     }
-    
-    if (acc === undefined && acc !== "" && acc !== 0 && acc !== [] && acc !== {}) {
+
+    if (acc === undefined) {
       result = cb(this[i], this[i + 1], i, this)
       return this.cReduce(cb, result, i + 2, result)
     }
