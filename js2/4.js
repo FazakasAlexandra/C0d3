@@ -17,10 +17,7 @@
 
 const solution = (arr, cb, i = 0) => {
   return ()=> {
-    if(i >= arr.length){
-      i = 0
-    }
-    cb(arr[i])
+    cb(arr[i % arr.length])
     i ++
   }
 }
