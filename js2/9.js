@@ -5,20 +5,19 @@
  */
 
 const solution = () => {
-  Array.prototype.cReduce = function (cb, acc, i = 0, result) {
+  Array.prototype.cReduce = function (cb, acc, i = 0) {
     if (i === this.length) {
-      return result
+      return acc
     }
 
     if (acc === undefined) {
-      result = cb(this[i], this[i + 1], i, this)
-      return this.cReduce(cb, result, i + 2, result)
+      acc = cb(this[i], this[i + 1], i, this)
+      return this.cReduce(cb, acc, i + 2)
     }
 
-    result = cb(acc, this[i], i, this)
-    acc = result
+    acc = cb(acc, this[i], i, this)
 
-    return this.cReduce(cb, acc, i + 1, result)
+    return this.cReduce(cb, acc, i + 1)
   }
 }
 
