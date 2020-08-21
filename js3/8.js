@@ -8,7 +8,13 @@
 */
 
 const solution = (obj, num) => {
-
+  Object.keys(obj).forEach((key, i) => {
+    if(i === 0) {
+      obj[key](key)
+    } else {
+      setTimeout(()=>{obj[key](key)}, num)
+    }
+  })
 }
 
 module.exports = {
