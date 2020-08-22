@@ -13,24 +13,24 @@
  */
 
 function insertObjects(arr, num2, arrNumber){
-  if(arr.length < num2){
-    arr.push({x: arr.length, y: arrNumber})
+  if(arr[arrNumber].length < num2){
+    arr[arrNumber].push({x: arr[arrNumber].length, y: arrNumber})
+
     return insertObjects(arr, num2, arrNumber)
   }
+  
   return
 }
 
-const solution = (num1, num2, Arr = []) => {
-  if(Arr.length < num1){
-    Arr.push([])
-    return solution(num1, num2, Arr)
+const solution = (num1, num2, arr = []) => {
+  if(arr.length < num1){
+    arr.push([])
+    insertObjects(arr, num2, arr.length - 1)
+
+    return solution(num1, num2, arr)
   }
 
-  Arr.forEach((e, i)=>{
-    insertObjects(e, num2, i)
-  })
-
-  return Arr
+  return arr
 }
 
 module.exports = {
