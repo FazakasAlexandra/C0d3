@@ -12,8 +12,25 @@
  * @return {array} arr
  */
 
-const solution = (num1, num2) => {
-  return []
+function insertObjects(arr, num2, arrNumber){
+  if(arr[arrNumber].length < num2){
+    arr[arrNumber].push({x: arr[arrNumber].length, y: arrNumber})
+
+    return insertObjects(arr, num2, arrNumber)
+  }
+  
+  return
+}
+
+const solution = (num1, num2, arr = []) => {
+  if(arr.length < num1){
+    arr.push([])
+    insertObjects(arr, num2, arr.length - 1)
+
+    return solution(num1, num2, arr)
+  }
+
+  return arr
 }
 
 module.exports = {

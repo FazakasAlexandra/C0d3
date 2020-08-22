@@ -5,8 +5,15 @@
  * @returns {boolean}
  */
 
-const solution = (arr, num) => {
-  return true
+const solution = (arr, num, obj = {}, i = 0) => {
+  if(i === arr.length){
+    return false
+  }
+  if(obj[num-arr[i]]){
+    return true
+  }
+  obj[arr[i]] = true
+  return solution(arr, num, obj, i + 1)
 }
 
 module.exports = {

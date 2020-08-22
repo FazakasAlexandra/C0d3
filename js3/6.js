@@ -4,8 +4,16 @@
  * @returns {array}
 */
 
-const solution = (arr) => {
-  return []
+const solution = (arr, obj = {}) => {
+  return arr.reduce((acc, e) => {
+    if(obj[e] && obj[e].occurences === 1){
+      acc.push(e)
+      obj[e].occurences += 1
+    } else {
+      obj[e] = {occurences : 1}
+    }
+    return acc 
+  }, []);
 }
 
 module.exports = {

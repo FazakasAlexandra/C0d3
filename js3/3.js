@@ -5,8 +5,12 @@
  */
 
 const solution = (arr) => {
-  return (obj) => {
-  }
+  return (obj) => arr.reduce((acc, e) => {
+    if (obj[e]) {
+      acc[e] = obj[e]
+    }
+    return acc
+  }, {});
 }
 
 module.exports = {

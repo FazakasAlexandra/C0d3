@@ -5,8 +5,11 @@
  * @return {object}
  **/
 
-const solution = (obj1, obj2) => {
-  return {}
+const solution = (a, b) => {
+  return Object.keys(a).reduce((acc, key) => {
+    acc[key] = b[key] ? b[key](a[key]) : a[key]
+    return acc
+  }, {})
 }
 module.exports = {
   solution
