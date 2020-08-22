@@ -5,16 +5,11 @@
  * @return {object}
  **/
 
-const solution = (a, b, c = {}) => {
-  Object.keys(a).forEach(key => {
-    if(b[key]){
-      c[key] = b[key](a[key])
-    } else {
-      c[key] = a[key]
-    }
-  })
-  
-  return c
+const solution = (a, b) => {
+  return Object.keys(a).reduce((acc, key) => {
+    acc[key] = b[key] ? b[key](a[key]) : a[key]
+    return acc
+  }, {})
 }
 module.exports = {
   solution
