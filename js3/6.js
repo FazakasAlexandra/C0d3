@@ -4,16 +4,16 @@
  * @returns {array}
 */
 
-const solution = (arr, duplicates = [], obj = []) => {
-  arr.forEach(e => {
+const solution = (arr, obj = {}) => {
+  return arr.reduce((acc, e) => {
     if(obj[e] && obj[e].occurences === 1){
-      duplicates.push(e)
+      acc.push(e)
       obj[e].occurences += 1
     } else {
       obj[e] = {occurences : 1}
     }
-  });
-  return duplicates
+    return acc 
+  }, []);
 }
 
 module.exports = {
