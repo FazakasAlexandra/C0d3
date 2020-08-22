@@ -8,7 +8,13 @@
  */
 
 const solution = (inp, letter, counter = 0, i = 0) => {
-  return 0
+  if(i === inp.length){
+    return counter
+  }
+
+  counter = inp[i] === letter ? counter + 1 : counter
+
+  return solution(inp, letter, counter, i + 1)
 }
 
 module.exports = {

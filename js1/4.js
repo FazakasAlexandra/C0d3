@@ -9,6 +9,9 @@
  */
 
 const solution = (fun, i = 0) => {
+  let isNotFalse = fun(i)
+  let isZero = isNotFalse === 0 ? true : null
+  return isNotFalse || isZero ? solution(fun, i + 1) : null
 }
 
 module.exports = {
