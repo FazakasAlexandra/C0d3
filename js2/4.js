@@ -15,8 +15,11 @@
  * @returns {function}
  */
 
-const solution = (arr, cb) => {
-  return () => {}
+const solution = (arr, cb, i = 0) => {
+  return ()=> {
+    cb(arr[i % arr.length])
+    i ++
+  }
 }
 
 module.exports = {

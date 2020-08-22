@@ -10,8 +10,20 @@
  * @returns {array}
  */
 
-const solution = (row, col) => {
-  return []
+function getColArr(col, colArr = []){
+  if(colArr.length < col){
+    colArr.push(0)
+    return getColArr(col, colArr)
+  }
+  return colArr
+}
+
+const solution = (row, col, arr = []) => {
+  if(arr.length < row){
+    arr[arr.length] = getColArr(col)
+    return solution(row, col, arr)
+  }
+  return arr
 }
 
 module.exports = {
