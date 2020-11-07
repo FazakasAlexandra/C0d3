@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+    <title>Stars UI</title>
+    <style>
+        .fa-star {
+            font-size: 2rem;
+        }
+
+        .fas {
+            -webkit-text-stroke-width: 3px;
+            -webkit-text-stroke-color: black;
+            color: yellow;
+        }
+
+        p {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="stars-container">
+
+    </div>
+    <p id="message">Give some stars</p>
+</body>
+<script>
+    class Star {
+        constructor(starNode) {
+            this.starNode = starNode
+        }
+
+        fillStar() {
+            this.starNode.classList.add('fas');
+        }
+
+        unfillStar() {
+            this.starNode.classList.remove('fas');
+        }
+    }
+
+    class Stars {
+        constructor(starsNumber) {
+            this.starsNumber = starsNumber;
+            this.message = document.querySelector('#message')
+            this.starsContainer = document.querySelector('#stars-container')
+            this.starsList = []
+            this.currentStar;
+            this.clicked = false;
+        }
+
+        renderStars(i = 0) {
+            if (i === this.starsNumber) return
+
+            this.starsContainer.innerHTML += '<i class="far fa-star"></i>'
+
+            return this.renderStars(i + 1)
+        }
+
+        fillStarsList(i = 0) {
+            if (i === this.starsNumber) {
+                return
+            }
+
+            this.starsList.push(new Star(this.starsContainer.children[i]));
+
+            return this.fillStarsList(i + 1)
+        }
+
+        addStarsEvents() {
+            Array.from(this.starsContainer.children).forEach((starIcon, i) => {
+                starIcon.addEventListener('click', () => {
+                    this.clicked = true;
+                    this.currentStar = i
+                    this.toggleStars()
+                    this.message.innerText = `You have given ${i + 1} stars`
+                })
+
+                starIcon.addEventListener('mouseenter', () => {
+                    if (!this.clicked) {
+                        this.currentStar = i
+                        this.toggleStars()
+                        this.message.innerText = `You are giving ${i + 1} stars`
+                    }
+                })
+            })
+        }
+
+        toggleStars() {
+            this.fillPreviousStars()
+            this.unfillNextStars()
+        }
+
+        fillPreviousStars(i = this.currentStar) {
+            if (i < 0) {
+                return
+            }
+
+            this.starsList[i].fillStar()
+
+            return this.fillPreviousStars(i - 1)
+        }
+
+        unfillNextStars(i = this.currentStar + 1) {
+            if (i === this.starsList.length) {
+                return
+            }
+
+            this.starsList[i].unfillStar()
+
+            return this.unfillNextStars(i + 1)
+        }
+    }
+
+    const stars = new Stars(5)
+    stars.renderStars()
+    stars.fillStarsList()
+    stars.addStarsEvents()
+    document.querySelector('#stars-container').addEventListener('mouseleave', () => {
+        stars.clicked = false;
+    })
+
+</script>
+
+</html>
