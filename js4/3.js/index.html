@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Fair</title>
+    <style>
+        #small-container {
+            text-align: center;
+        }
+
+        #bigContainer {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            pointer-events: none;
+            width: 200px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+        #big {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+        #scope {
+            position: absolute;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="small-container">
+        <img src="./assets/small.jpg" id="small" alt="small-image">
+    </div>
+
+    <div id="bigContainer">
+        <img src="./assets/scope.png" id="scope" alt="">
+        <img src="./assets/big.jpg" id="big" alt="">
+    </div>
+</body>
+
+<script>
+
+    small.addEventListener("mousemove", (e) => {
+        const ratio = Math.floor(big.width / small.width)
+
+        const mouseX = Math.abs(e.offsetX)
+        const mouseY = Math.abs(e.offsetY)
+
+        bigContainer.style.left = `${e.clientX - 100}px`
+        bigContainer.style.top = `${e.clientY - 100}px`
+        bigContainer.style.display = "block"
+
+        big.style.left = `${-(mouseX * ratio) + 100}px`
+        big.style.top = `${-(mouseY * ratio) + 100}px`
+    })
+
+    small.addEventListener("mouseleave",()=>{
+        bigContainer.style.display = "none"
+    })
+
+</script>
+
+</html>
