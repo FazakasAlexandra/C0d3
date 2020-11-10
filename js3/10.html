@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/papercss@1.7.0/dist/paper.min.css">
+    <title>Pokemon Viewer</title>
+</head>
+
+<body>
+    <button id='$previous'>PREVIOUS</button>
+    <button id='$next'>NEXT</button>
+    <div id="$profilesContainer">
+    </div>
+</body>
+<script>
+
+    function fetchPokemons(url = 'https://pokeapi.co/api/v2/pokemon?offset=0&limit=20') {
+        if (url) {
+            fetch(url)
+                .then(res => res.json())
+                .then((data) => {
+                    localStorage.setItem('set', JSON.stringify({ previous: data.previous, next: data.next }))
+                    makePokemonProfiles(data.results)
+                })
+        }
+    }
+
+    function makePokemonProfiles(pokemons, pokemonProfiles = []) {
+        pokemons.forEach(pokemon => {
+            fetch(pokemon.url)
+                .then(res => res.json())
+                .then((data) => {
+                    pokemonProfiles.push({
+                        image: data.sprites.front_default,
+                        name: data.name
+                    })
+                })
+                .then(() => {
+                    if (pokemonProfiles.length === pokemons.length) {
+                        renderPokemons(pokemonProfiles)
+                    }
+                })
+        });
+    }
+
+    function renderPokemons(pokemonProfiles) {
+        $profilesContainer.innerHTML = pokemonProfiles.reduce((acc, profile) => {
+            return `${acc}<h3>${profile.name}<h3><img src="${profile.image}">`
+        }, '')
+    }
+
+    $next.addEventListener('click', () => {
+        fetchPokemons(JSON.parse(localStorage.getItem('set')).next)
+    })
+
+    $previous.addEventListener('click', () => {
+        fetchPokemons(JSON.parse(localStorage.getItem('set')).previous)
+    })
+
+    fetchPokemons()
+
+</script>
+
+</html>
