@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lights Off</title>
+    <style>
+        .container {
+            width: fit-content;
+            height: fit-content;
+            background-color: black;
+        }
+
+        .col {
+            width: 50px;
+            height: 50px;
+            background-color: #AAAAAA;
+            border-style: solid;
+            border-width: 0.1px;
+        }
+
+        .row {
+            display: flex;
+            width: fit-content;
+            height: fit-content;
+        }
+
+        .on {
+            background-color: #AAFFAA;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <script>
+        class Tile {
+            constructor(node) {
+                this.on = false
+                this.node = node
+            }
+
+            switchLight() {
+                this.on = !this.on
+                this.node.classList.toggle('on');
+            }
+        }
+
+        class Grid {
+            constructor(tilesNr, game) {
+                this.game = game;
+                this.rowRandomNr = Math.floor(Math.random() * tilesNr)
+                this.colRandomNr = Math.floor(Math.random() * tilesNr)
+                this.tilesNr = tilesNr
+                this.tilesList = []
+            }
+
+            makeGridCols(rowNr, rowNode) {
+                for (let colNr = 0; colNr < this.tilesNr; colNr++) {
+                    const colNode = this.getNode(`${rowNr}-${colNr}`, "col")
+
+                    rowNode.appendChild(colNode)
+
+                    this.tilesList[rowNr].push(new Tile(colNode))
+                }
+            }
+
+            makeGridRows() {
+                for (let rowNr = 0; rowNr < this.tilesNr; rowNr++) {
+                    this.tilesList.push([])
+
+                    const rowNode = this.getNode(`row-${rowNr}`, "row")
+
+                    this.makeGridCols(rowNr, rowNode)
+                }
+            }
+
+            getNode(id, className) {
+                const node = document.createElement('div')
+                node.classList.add(className)
+                node.id = id
+
+                container.appendChild(node)
+
+                return node
+            }
+
+            turnRandomTileOn() {
+                const randomTile = this.tilesList[this.rowRandomNr][this.colRandomNr];
+                randomTile.switchLight()
+            }
+
+            switchHorizontalTiles(rowNr, colNr) {
+                // turn on r tile
+                if (colNr == 0) {
+                    this.tilesList[rowNr][colNr + 1].switchLight()
+                    return
+                }
+
+                // turn on l tile
+                if (colNr == this.tilesNr - 1) {
+                    this.tilesList[rowNr][colNr - 1].switchLight()
+                    return
+                }
+
+                // turn on r and l tiles
+                this.tilesList[rowNr][colNr + 1].switchLight()
+                this.tilesList[rowNr][colNr - 1].switchLight()
+
+            }
+
+            switchVerticalTiles(rowNr, colNr) {
+                // turn on bottom tile
+                if (rowNr == 0) {
+                    this.tilesList[rowNr + 1][colNr].switchLight()
+                    return
+                }
+
+                // turn on top tile
+                if (rowNr == this.tilesNr - 1) {
+                    this.tilesList[rowNr - 1][colNr].switchLight()
+                    return
+                }
+
+                // turn on top and bottom tiles
+                this.tilesList[rowNr + 1][colNr].switchLight()
+                this.tilesList[rowNr - 1][colNr].switchLight()
+            }
+
+            addTilesEvents() {
+                this.tilesList.forEach((tileRow, rowNr) => {
+                    tileRow.forEach((tile, colNr) => {
+                        this.addTileEvent(tile, rowNr, colNr)
+                    })
+                })
+            }
+
+            addTileEvent(tile, rowNr, colNr) {
+                tile.node.addEventListener("click", () => {
+                    if (tile.on) {
+                        tile.switchLight()
+
+                        this.switchHorizontalTiles(rowNr, colNr)
+                        this.switchVerticalTiles(rowNr, colNr)
+                    }
+
+                    game.checkWin()
+
+                })
+            }
+
+        }
+
+        class Game {
+            constructor(nrTiles) {
+                this.grid = new Grid(nrTiles, this);
+                this.generateGrid()
+            }
+
+            generateGrid() {
+                this.grid.makeGridRows()
+                this.grid.turnRandomTileOn()
+                this.grid.addTilesEvents()
+            }
+
+            restartGame() {
+                const nrTiles = prompt("You won ! \n 1 - restart \n 0 - stop \n n >= 3 - increase difficulty")
+
+                if (nrTiles != null) {
+                    container.innerHTML = "";
+
+                    if (+nrTiles >= 3) {
+                        this.grid = new Grid(nrTiles, this)
+                        this.generateGrid()
+                        return
+                    }
+
+                    if(+nrTiles === 1){
+                        this.grid = new Grid(2, this)
+                        this.generateGrid()
+                        return
+                    }
+
+                    if (+nrTiles === 0) return
+                }
+            }
+
+            checkWin() {
+                let allLightsOff = true
+
+                this.grid.tilesList.forEach((tileRow, rowNr) => {
+                    tileRow.forEach((tile, colNr) => {
+                        if (tile.on) allLightsOff = false
+                    })
+                })
+
+                if (allLightsOff) {
+                    this.restartGame()
+                }
+            }
+        }
+
+        const game = new Game(2)
+
+    </script>
+</body>
+
+</html>
