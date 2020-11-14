@@ -15,9 +15,15 @@ class Content {
 
     textEvent() {
         this.container.querySelector(".text").addEventListener("click", () => {
-            this.board.kanban.addHistory()
+            this.board.kanban.addHistory([this.add, this])
             this.remove()
         })
+    }
+
+    add(self = this) {
+        self.setContainer()
+        self.board.contents.splice(self.id, 0, self)
+        self.board.renderContent(self.board)
     }
 
     remove() {
@@ -58,16 +64,26 @@ class Content {
 
     addRightArrowEvent() {
         this.container.querySelector(".right").addEventListener("click", (e) => {
-            this.remove()
-            this.board.kanban.transfer(this.board.id + 1, this)
+            this.board.kanban.addHistory([this.transferLeft, this])
+            this.transferRight()
         })
+    }
+
+    transferRight(self = this){
+        self.remove()
+        self.board.kanban.transfer(self.board.id + 1, self)
     }
 
     addLeftArrowEvent() {
         this.container.querySelector(".left").addEventListener("click", (e) => {
-            this.remove()
-            this.board.kanban.transfer(this.board.id - 1, this)
+            this.board.kanban.addHistory([this.transferRight, this])
+            this.transferLeft()
         })
+    }
+
+    transferLeft(self = this){
+        self.remove()
+        self.board.kanban.transfer(self.board.id - 1, self)
     }
 }
 
@@ -107,18 +123,23 @@ class Board {
     addSubmitButtonEvent() {
         this.boardNode.querySelector(".submit").addEventListener("click", () => {
             const inputText = this.boardNode.querySelector(".input-text")
-            this.kanban.addHistory()
             this.contents.push(new Content(this.contents.length, inputText.value, this))
             this.renderContent() 
+            this.kanban.addHistory([this.removeContent,this])
 
             inputText.value = ""
         })
+    } 
+
+    removeContent(self = this) {
+        self.contents.pop()
+        self.renderContent()
     }
 
-    renderContent() {
-        this.boardNode.querySelector(".content-container").innerHTML = ''
-        this.contents.forEach((content) => {
-            this.boardNode.querySelector(".content-container").appendChild(content.container)
+    renderContent(self = this) {
+        self.boardNode.querySelector(".content-container").innerHTML = ''
+        self.contents.forEach((content) => {
+            self.boardNode.querySelector(".content-container").appendChild(content.container)
         })
     }
 }
@@ -130,27 +151,8 @@ class Kanban {
         this.history = []
     }
 
-    getContentCopy(content) {
-        return Object.create(
-            Object.getPrototypeOf(content),
-            Object.getOwnPropertyDescriptors(content)
-        );
-    }
-
-    getBoadCopy(board) {
-        const contentsCopy = board.contents.map(content => this.getContentCopy(content))
-        board.contents = contentsCopy 
-        board.node = board.boardNode.cloneNode(true)
-        return Object.create(
-            Object.getPrototypeOf(board),
-            Object.getOwnPropertyDescriptors(board)
-        );
-    }
-
-    addHistory() {
-        const boardsCopy = this.boards.map(board => this.getBoadCopy(board))
-        this.history.push(boardsCopy)
-        console.log(this.history)
+    addHistory(action) {
+        this.history.push(action)
     }
 
     renderBoards() {
@@ -172,7 +174,9 @@ class Kanban {
     }
 
     undo() {
-
+        console.log(this.history)
+        const prevAction = this.history.pop()
+        prevAction[0](prevAction[1])
     }
 }
 
