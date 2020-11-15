@@ -15,19 +15,21 @@ class Content {
 
     textEvent() {
         this.container.querySelector(".text").addEventListener("click", () => {
-            this.board.kanban.addHistory([this.add, this])
+            this.board.kanban.addHistory([this.restore, this])
             this.remove()
         })
     }
 
-    add(self = this) {
+    restore(self = this) {
         self.setContainer()
         self.board.contents.splice(self.id, 0, self)
         self.board.renderContent(self.board)
     }
 
     remove() {
+        console.log(this.board.contents)
         this.board.contents.splice(this.id, 1)
+        console.log(this.board.contents)
         this.container.remove()
     }
 
@@ -37,6 +39,8 @@ class Content {
     }
 
     addText() {
+        console.log(this.board.id, this.board.kanban.boards.length)
+
         if (+this.board.id === 0) {
             this.container.innerHTML = `
             <p class="text">${this.text}</p> 
@@ -45,7 +49,7 @@ class Content {
             return
         }
 
-        if (+this.board.id === this.board.kanban.boards.length - 1) {
+        if (+this.board.id === this.board.kanban.boardNames.length - 1) {
             this.container.innerHTML = `
             <p class="arrow left"> < </p> 
             <p class="text">${this.text}</p>`
@@ -69,7 +73,7 @@ class Content {
         })
     }
 
-    transferRight(self = this){
+    transferRight(self = this) {
         self.remove()
         self.board.kanban.transfer(self.board.id + 1, self)
     }
@@ -81,7 +85,7 @@ class Content {
         })
     }
 
-    transferLeft(self = this){
+    transferLeft(self = this) {
         self.remove()
         self.board.kanban.transfer(self.board.id - 1, self)
     }
@@ -96,11 +100,6 @@ class Board {
         this.boardNode;
         this.render()
     }
-
-    removeBoadNode(){
-        this.boardNode.remove()
-    }
-
     render() {
         this.setBoardNode()
         this.addSubmitButtonEvent()
@@ -124,12 +123,12 @@ class Board {
         this.boardNode.querySelector(".submit").addEventListener("click", () => {
             const inputText = this.boardNode.querySelector(".input-text")
             this.contents.push(new Content(this.contents.length, inputText.value, this))
-            this.renderContent() 
-            this.kanban.addHistory([this.removeContent,this])
+            this.renderContent()
+            this.kanban.addHistory([this.removeContent, this])
 
             inputText.value = ""
         })
-    } 
+    }
 
     removeContent(self = this) {
         self.contents.pop()
@@ -155,9 +154,22 @@ class Kanban {
         this.history.push(action)
     }
 
+    renderWithStoredContent(){
+        JSON.parse(localStorage.getItem("boardsContents")).forEach((contents, idx) => {
+            const board = new Board(this.boardNames[idx], this, idx)
+            contents.forEach(text => board.contents.push(new Content(board.contents.length, text, board)))
+            board.renderContent()
+            this.boards.push(board)
+        })
+    }
+
     renderBoards() {
+        if (localStorage.getItem("boardsContents")) {
+            this.renderWithStoredContent()
+            return
+        }
+
         this.boardNames.forEach((name, idx) => {
-            //if (localStorage.getItem(`${name}`)) boardContent = JSON.parse(localStorage.getItem(`${name}`))
             this.boards.push(new Board(name, this, idx))
         })
     }
@@ -174,15 +186,33 @@ class Kanban {
     }
 
     undo() {
-        console.log(this.history)
+        // [function, object]
         const prevAction = this.history.pop()
         prevAction[0](prevAction[1])
+    }
+
+    storeText(board, boardsContents) {
+        const texts = []
+
+        board.contents.forEach(content => {
+            if (content.container) texts.push(content.text)
+        })
+
+        boardsContents.push(texts)
+    }
+
+    storeBoardsContents() {
+        const boardsContents = []
+
+        this.boards.forEach(board => this.storeText(board, boardsContents))
+
+        localStorage.setItem('boardsContents', JSON.stringify(boardsContents))
     }
 }
 
 const kanban = new Kanban(["To-do", "Doing", "Done", "Approved"])
 kanban.renderBoards()
 
-document.querySelector("#undo").addEventListener("click", () => {
-    kanban.undo()
-})
+document.querySelector("#undo").addEventListener("click",()=>kanban.undo())
+
+window.addEventListener('beforeunload',()=>kanban.storeBoardsContents())
