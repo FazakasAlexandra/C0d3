@@ -20,16 +20,14 @@ class Content {
         })
     }
 
-    restore(self = this) {
-        self.setContainer()
-        self.board.contents.splice(self.id, 0, self)
-        self.board.renderContent(self.board)
+    restore = () => {
+        this.setContainer()
+        this.board.contents.splice(this.id, 0, this)
+        this.board.renderContent(this.board)
     }
 
     remove() {
-        console.log(this.board.contents)
         this.board.contents.splice(this.id, 1)
-        console.log(this.board.contents)
         this.container.remove()
     }
 
@@ -73,9 +71,9 @@ class Content {
         })
     }
 
-    transferRight(self = this) {
-        self.remove()
-        self.board.kanban.transfer(self.board.id + 1, self)
+    transferRight = () => {
+        this.remove()
+        this.board.kanban.transfer(this.board.id + 1, this)
     }
 
     addLeftArrowEvent() {
@@ -85,9 +83,9 @@ class Content {
         })
     }
 
-    transferLeft(self = this) {
-        self.remove()
-        self.board.kanban.transfer(self.board.id - 1, self)
+    transferLeft = () => {
+        this.remove()
+        this.board.kanban.transfer(this.board.id - 1, this)
     }
 }
 
@@ -130,15 +128,15 @@ class Board {
         })
     }
 
-    removeContent(self = this) {
-        self.contents.pop()
-        self.renderContent()
+    removeContent = () => {
+        this.contents.pop()
+        this.renderContent()
     }
 
-    renderContent(self = this) {
-        self.boardNode.querySelector(".content-container").innerHTML = ''
-        self.contents.forEach((content) => {
-            self.boardNode.querySelector(".content-container").appendChild(content.container)
+    renderContent = () => {
+        this.boardNode.querySelector(".content-container").innerHTML = ''
+        this.contents.forEach((content) => {
+            this.boardNode.querySelector(".content-container").appendChild(content.container)
         })
     }
 }
@@ -188,7 +186,7 @@ class Kanban {
     undo() {
         // [function, object]
         const prevAction = this.history.pop()
-        prevAction[0](prevAction[1])
+        if(prevAction) prevAction[0](prevAction[1])
     }
 
     storeText(board, boardsContents) {
