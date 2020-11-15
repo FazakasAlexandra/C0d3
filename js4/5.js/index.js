@@ -37,8 +37,6 @@ class Content {
     }
 
     addText() {
-        console.log(this.board.id, this.board.kanban.boards.length)
-
         if (+this.board.id === 0) {
             this.container.innerHTML = `
             <p class="text">${this.text}</p> 
@@ -98,6 +96,7 @@ class Board {
         this.boardNode;
         this.render()
     }
+
     render() {
         this.setBoardNode()
         this.addSubmitButtonEvent()
@@ -146,6 +145,7 @@ class Kanban {
         this.boardNames = boardNames
         this.boards = []
         this.history = []
+        this.renderBoards()
     }
 
     addHistory(action) {
@@ -209,7 +209,6 @@ class Kanban {
 }
 
 const kanban = new Kanban(["To-do", "Doing", "Done", "Approved"])
-kanban.renderBoards()
 
 document.querySelector("#undo").addEventListener("click",()=>kanban.undo())
 
