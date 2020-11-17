@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select</title>
+    <style>
+        #container {
+            height: fit-content;
+            width: fit-content;
+        }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .tile {
+            width: 50px;
+            height: 50px;
+            border-style: solid;
+            border-color: cornflowerblue;
+            border-width: 1px;
+            margin: 2px;
+
+        }
+
+        .row {
+            display: flex;
+        }
+
+        #square {
+            position: absolute;
+            display: none;
+            pointer-events: none;
+            background-color: rgba(128, 128, 128, 0.473);
+            top: 0px;
+            left: 0px;
+        }
+
+        .selected {
+            background-color: rgb(255, 222, 115);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <div id="square"></div>
+    <script>
+        let extendingSqare = false
+        let squareWidthStart = null;
+        let squareHeightStart = null;
+
+        function generateRows(nrR, nrC, i = 0) {
+            if (i === nrR) return
+
+            const row = document.createElement('div')
+            row.className = 'row'
+
+            generateCols(row, nrC, i)
+
+            container.appendChild(row)
+
+            return generateRows(nrR, nrC, i + 1)
+        }
+
+        function generateCols(row, nrC, colIdx, i = 0) {
+            if (i === nrC) return
+
+            const col = document.createElement('div')
+            col.className = 'tile'
+
+            //56 = width(50px) + left margin(2px) + right margin(2px) + left border(1px) + right border(1px)
+            //56 = height(50px) + top margin(2px) + bottom margin(2px) + top border(1px) + top border(1px)
+            setTileCoordinateAttributes(col, i * 56, (i * 56) + 56, colIdx * 56, (colIdx * 56) + 56)
+
+            row.appendChild(col)
+
+            return generateCols(row, nrC, colIdx, i + 1)
+        }
+
+        function setTileCoordinateAttributes(node, xStart, xEnd, yStart, yEnd) {
+            node.setAttribute('x-start', xStart)
+            node.setAttribute('x-end', xEnd)
+            node.setAttribute('y-start', yStart)
+            node.setAttribute('y-end', yEnd)
+        }
+
+        container.addEventListener('mousedown', (e) => {
+            extendingSqare = true
+
+            square.style.width = `0px`
+            square.style.height = `0px`
+
+            square.style.left = `${e.x}px`
+            square.style.top = `${e.y}px`
+
+            squareWidthStart = e.x
+            squareHeightStart = e.y
+
+            square.style.display = "block"
+        })
+
+        function getSquareCoordinates() {
+            return {
+                xStart: parseInt(square.style.left),
+                xEnd: parseInt(square.style.left) + parseInt(square.style.width),
+                yStart: parseInt(square.style.top),
+                yEnd: parseInt(square.style.top) + parseInt(square.style.height)
+            }
+        }
+
+        container.addEventListener('mousemove', (e) => {
+            if (extendingSqare) {
+                if (e.clientX < squareWidthStart) square.style.left = `${e.clientX}px`
+                if (e.clientY < squareHeightStart) square.style.top = `${e.clientY}px`
+
+                square.style.width = `${Math.abs(e.clientX - squareWidthStart)}px`
+                square.style.height = `${Math.abs(e.clientY - squareHeightStart)}px`
+
+                highlightTiles(getSquareCoordinates())
+            }
+
+        })
+
+        function getTileCoordinateAttributes(node, xStart, xEnd, yStart, yEnd) {
+            return {
+                xStart: +node.getAttribute('x-start'),
+                xEnd: +node.getAttribute('x-end'),
+                yStart: +node.getAttribute('y-start'),
+                yEnd: +node.getAttribute('y-end')
+            }
+        }
+
+        function highlightTiles({ xStart, xEnd, yStart, yEnd }) {
+            container.querySelectorAll('.row').forEach(row => {
+                row.querySelectorAll('.tile').forEach(col => {
+                    const tileCoord = getTileCoordinateAttributes(col)
+
+                    if (xEnd > tileCoord.xStart && yEnd > tileCoord.yStart && xStart <= tileCoord.xEnd && yStart < tileCoord.yEnd) {
+                        col.classList.add('selected')
+                    } else {
+                        col.classList.remove('selected')
+                    }
+
+                })
+            });
+        }
+
+        container.addEventListener('mouseup', (e) => {
+            extendingSqare = false
+            square.style.display = "none"
+        })
+
+        generateRows(5, 5)
+    </script>
+</body>
+
+</html>
