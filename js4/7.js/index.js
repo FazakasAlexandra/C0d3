@@ -23,7 +23,7 @@ class Tile {
         tile.addEventListener('click', () => {
             if (!this.game.isGameOver(this)) {
                 this.reveal()
-                this.game.isWinner(this)
+                this.game.isWinner()
             }
         })
     }
@@ -31,10 +31,8 @@ class Tile {
     addRightClickEvent(tile) {
         tile.addEventListener('contextmenu', (e) => {
             e.preventDefault()
-            if (!this.node.classList.contains('mine') && !this.node.classList.contains('revealed')) {
+            if (!this.node.classList.contains('mine') && !this.node.classList.contains('revealed'))
                 this.node.classList.add('mine', 'grey-mine')
-                if (this.isMine) this.game.score++
-            }
         })
     }
 
@@ -111,6 +109,7 @@ class MineSweeper {
                 if (Math.random() < 0.10 && this.mines > 0) {
                     this.mines--
                     tile.isMine = true
+                    tile.node.classList.add('mine', 'grey-mine')
                 }
             })
         });
@@ -180,9 +179,8 @@ class Game {
         }
     }
 
-    isWinner(tile) {
-        if (this.score === (10 * 10)) {
-            tile.node.classList.add('revealed')
+    isWinner() {
+        if (this.score === (10 * 10) - 10) {
             setTimeout(() => this.stop("YOU WON ! \nOK - restart \nCancel - exit"), 200)
             return true
         }
