@@ -109,7 +109,6 @@ class MineSweeper {
                 if (Math.random() < 0.10 && this.mines > 0) {
                     this.mines--
                     tile.isMine = true
-                    tile.node.classList.add('mine', 'grey-mine')
                 }
             })
         });
