@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MineSweeper</title>
+    <style>
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tile {
+            width: 30px;
+            height: 30px;
+            border-style: outset;
+            background-color: rgb(199, 199, 199);
+            background-color: #d5d5d5;
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+            border-width: medium;
+        }
+        
+        .row {
+            display: flex;
+        }
+
+        h1 {
+            align-self: center;
+            margin: 0px;
+            font-family: system-ui;
+            font-size: 1.5rem
+        }
+
+        .h1-1 {
+            color: blue
+        }
+
+        .h1-2 {
+            color: green;
+        }
+
+        .h1-3 {
+            color: red
+        }
+
+        .revealed {
+            cursor: auto;
+            border-style: inset;
+            background-color: #B5B5B5;
+        }
+
+        .mine.grey-mine,
+        .mine.red-mine{
+            border-style: inset;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position-x: -2px;
+            background-position-y: -2px;
+        }
+
+        .red-mine {
+            background: url(https://lh3.googleusercontent.com/proxy/6WYEd6lpC2OTuLx9gOr8g_vYkVDGiNVRovUszQL5wn57H8kt73QYfe3qyHupGuKN5WRpFfTD06RFFijnG6kNhZ9fKDAx_511);
+            background-color: #D90000;
+        }
+
+        .grey-mine{
+            background: url(https://lh3.googleusercontent.com/proxy/nmhxlEnplmT-6Ew1r3Fq9MI8K7YbL4ji1qFEUW_qsKNoTBqowVtZtc6EoIJUzjo3Nkc3SHx6ovDHxuwr3XG2gTq2TWCHF-P0);
+            background-color: #B5B5B5;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+</body>
+<script src="index.js"></script>
+
+</html>
