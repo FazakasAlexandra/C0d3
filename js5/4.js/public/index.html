@@ -1,0 +1,127 @@
+<style>
+    body {
+        margin: 0px;
+    }
+
+    #editor {
+        height: 100%;
+        width: 85%;
+    }
+
+    .wrapper {
+        display: flex;
+    }
+
+    button {
+        background-color: #000000a6;
+        color: white;
+        padding: 0.2rem 1.5rem;
+        cursor: pointer;
+        border-color: #928d8d;
+    }
+
+    button:hover {
+        border-style: inset;
+        background-color: #000000cc;
+    }
+
+    input {
+        background-color: #34352ff5;
+        border: none;
+        border-bottom-style: inset;
+        border-right-style: groove;
+        color: white;
+        border-color: #6a6a6a;
+        padding: 0.2rem
+    }
+
+    .files-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background-color: #272822f0;
+    }
+
+    .files-container a {
+        color: white;
+        text-decoration: none;
+        padding: 0.3rem 1rem;
+        cursor: pointer;
+    }
+
+    .files-container a:hover {
+        background-color: #43443c;
+    }
+
+    .list-wraper {
+        display: flex;
+        flex-direction: column;
+        width: 15%
+    }
+</style>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+    integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+<div>
+    <div class="wrapper">
+        <input type="text" id="file-name" placeholder="file.ext" style="flex-grow: 1">
+        <button onclick="createFile()">Create File</button>
+    </div>
+    <div class="wrapper" style="height : 100%">
+        <div class="list-wraper">
+            <input onkeyup="searchFile(event)" placeholder="search file" type="text" id="search-file">
+            <div class="files-container"></div>
+        </div>
+        <div id="editor"></div>
+    </div>
+</div>
+
+<script src="//ajaxorg.github.io/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="//ajaxorg.github.io/ace-builds/src-min-noconflict/ext-modelist.js" type="text/javascript"
+    charset="utf-8"></script>
+<script>
+    let files = []
+    const filesContainer = document.querySelector('.files-container')
+    const fileNameInput = document.querySelector('#file-name')
+    const editor = ace.edit('editor')
+    editor.setTheme("ace/theme/monokai")
+
+    function openFile(e) {
+        fetch(`http://localhost:3000/api/files/${e.target.text}`).then(res => res.json()).then((res) => {
+            editor.getSession().setMode(`ace/mode/${res.languages[res.ext]}`)
+            editor.setValue(res.data)
+        })
+    }
+
+    function searchFile(e) {
+        let searchResults = files.filter((file) => {
+            return file.includes(e.target.value)
+        })
+        filesContainer.innerHTML = searchResults.join(' ')
+    }
+
+    function createFile() {
+        fetch('http://localhost:3000/api/files', {
+            method: "POST",
+            headers: { 'Content-Type': 'Application/JSON' },
+            body: JSON.stringify({
+                fileName: fileNameInput.value,
+                fileContent: editor.getValue()
+            })
+        }).then(res => res.json()).then((res) => {
+            files = []
+            fetchFiles()
+        })
+    }
+
+    function fetchFiles() {
+        fetch('http://localhost:3000/api/files').then(res => res.json()).then((fileNames) => {
+            filesContainer.innerHTML = ''
+            fileNames.forEach((name, i) => {
+                files.push(`<a id="${name}" onclick="openFile(event)"">${name}</a>`)
+                filesContainer.innerHTML += files[i]
+            });
+        })
+    }
+
+    fetchFiles()
+</script>
