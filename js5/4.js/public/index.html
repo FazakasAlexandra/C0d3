@@ -86,8 +86,10 @@
     editor.setTheme("ace/theme/monokai")
 
     function openFile(e) {
-        fetch(`http://localhost:3000/api/files/${e.target.text}`).then(res => res.json()).then((res) => {
-            editor.getSession().setMode(`ace/mode/${res.languages[res.ext]}`)
+        let fileName = e.target.text
+        let fileExt = fileName.split('.').pop()
+        fetch(`http://localhost:3000/api/files/${fileName}`).then(res => res.json()).then((res) => {
+            editor.getSession().setMode(`ace/mode/${{ 'js': 'javascript', 'html': 'html', 'css': 'css' }[fileExt]}`)
             editor.setValue(res.data)
         })
     }

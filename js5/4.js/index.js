@@ -1,15 +1,13 @@
 const express = require('express');
 const fs = require('fs')
 const cors = require('cors');
-const { setInterval } = require('timers');
-
 const app = express();
 app.use(cors())
 app.use(express.json())
 app.use(express.static('public'))
 
 let storedFiles = {}; // { filename : date}
-const fiveMins = 1000 * 60 * 1;
+const fiveMins = 1000 * 60 * 5;
 
 app.get('/api/files', (req, res) => {
     fs.readdir('./files', (err, files) => {
@@ -35,11 +33,7 @@ app.get('/api/files/:name', (req, res) => {
     fs.readFile(`./files/${req.params.name}`, (err, content) => {
         if (err) return res.json({ error: `file "${req.params.name}" not found in files directory` })
 
-        res.json({
-            ext: req.params.name.split('.').pop(),
-            languages: { 'js': 'javascript', 'html': 'html', 'css': 'css' },
-            data: content.toString("utf-8")
-        })
+        res.json({data: content.toString("utf-8")})
     })
 })
 
@@ -52,6 +46,7 @@ function clearFiles() {
             })
         }
     })
+    setTimeout(clearFiles, fiveMins);
 }
 
 app.listen(3000, () => {
@@ -62,5 +57,5 @@ app.listen(3000, () => {
         })
     })
 
-    setInterval(clearFiles, fiveMins);
+    clearFiles();
 });
