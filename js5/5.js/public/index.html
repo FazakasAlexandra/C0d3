@@ -1,0 +1,39 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/andybrewer/mvp/mvp.css">
+    <title>Chatroom js5/5</title>
+</head>
+
+<body>
+    <section>
+        <form>
+            <h1>Enter room name</h1>
+            <input type="text" id="chatroom_name">
+            <button type="button" class="submit" onclick="enterChatroom()">Submit</button>
+        </form>
+    </section>
+</body>
+<script>
+    function checkAuth(user = JSON.parse(localStorage.getItem('usersession'))) {
+        if (user) {
+            fetch('api/session', {
+                headers: {
+                    Authorization: `Bearer ${user.jwt}`
+                }
+            }).then((res) => {
+                if (res.status === 403) {
+                    localStorage.clear()
+                    window.location = '/login.html'
+                }
+            })
+        } else {
+            window.location = '/login.html'
+        }
+    }
+
+    function enterChatroom() {
+        localStorage.setItem('chatroom_name', document.querySelector('#chatroom_name').value)
+        window.location = '/chatroom.html'
+    }
+
+    checkAuth()
+</script>

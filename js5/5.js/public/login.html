@@ -1,0 +1,43 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/andybrewer/mvp/mvp.css">
+    <title>Chatroom js5/5</title>
+</head>
+
+<body>
+    <section>
+        <form>
+            <header>
+                <h1>You must be logged in</h1>
+                <p>No account ? You can <a href="/signup.html">Sign Up</a> instead</p>
+            </header>
+            <input type="text" id="username" placeholder="user name">
+            <input type="password" id="password" placeholder="password">
+            <p style="color:red" id="error"></p>
+            <button type="button" class="submit" onclick="login()">Submit</button>
+        </form>
+    </section>
+
+</body>
+<script>
+
+    function login() {
+        fetch('https://js5.c0d3.com/auth/api/sessions', {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: btoa(document.querySelector('#password').value),
+                username: document.querySelector('#username').value
+            })
+        }).then(res => res.json()).then((data) => {
+            if (data.error) {
+                document.querySelector('#error').innerText = data.error.message
+                return
+            }
+            localStorage.setItem('usersession', JSON.stringify(data))
+            window.location = '/index.html'
+        })
+    }
+</script>

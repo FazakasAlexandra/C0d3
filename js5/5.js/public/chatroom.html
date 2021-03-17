@@ -1,0 +1,87 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/andybrewer/mvp/mvp.css">
+    <title>Chatroom js5/5</title>
+</head>
+
+<body>
+    <section>
+        <form>
+            <h1>Chatroom</h1>
+            <input type="text" id="message" placeholder="message">
+            <button type="button" class="submit" onclick="postMessage()">Submit</button>
+        </form>
+    </section>
+
+    <div id="messages"></div>
+
+</body>
+
+<script>
+    const chatroomName = localStorage.getItem('chatroom_name')
+    const messagesContainer = document.querySelector('#messages')
+    let user = JSON.parse(localStorage.getItem('usersession'))
+
+    if (!chatroomName) window.location = '/index.html'
+    document.querySelector('h1').innerText = `chatroom ${chatroomName}`
+
+    function redirectLogIn() {
+        localStorage.clear()
+        window.location = '\login.html'
+    }
+
+    function postMessage() {
+        const message = document.querySelector('#message').value
+
+        fetch(`/api/${chatroomName}/messages`, {
+            headers: {
+                'content-type': 'application/json',
+                Authorization: `Bearer ${user.jwt}`
+            },
+            method: "POST",
+            body: JSON.stringify({
+                message: message
+            })
+        })
+            .then((res) => {
+                if (res.status === 403) {
+                    redirectLogIn()
+                } else {
+                    return res.json()
+                }
+            })
+            .then(body => {
+                console.log(body)
+                messagesContainer.innerHTML = `<section><article><aside><i>${body.user.username}</i><p>${message}</p></aside></article></section>${messagesContainer.innerHTML}`
+            })
+    }
+
+    function fetchMessages() {
+        fetch(`/api/${chatroomName}/messages`, {
+            headers: {
+                Authorization: `Bearer ${user.jwt}`
+            }
+        })
+            .then((res) => {
+                if (res.status === 403) {
+                    redirectLogIn()
+                } else {
+                    return res.json()
+                }
+            })
+            .then((body) => {
+                messagesContainer.innerHTML = body.reduce((acc, data) => {
+                    return `${acc}<section><article><aside><i>${data.username}</i><p>${data.message}</p></aside></article></section>`
+                }, '')
+            })
+    }
+
+    function updateChatroom() {
+        setTimeout(() => {
+            user = JSON.parse(localStorage.getItem('usersession'))
+            fetchMessages()
+            updateChatroom()
+        }, 1000)
+    }
+    updateChatroom()
+    fetchMessages()
+</script>
