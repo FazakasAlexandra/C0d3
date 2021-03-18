@@ -11,22 +11,30 @@ app.get('/memegen/api/:text', (req, res) => {
     text = req.params.text
 
     jimp.loadFont(font).then(font => {
-
-        if (cache[src]) {
-            manipulateImg(cache[src].clone(), font, text, blurScale, res)
-            return
-        }
-        
-        jimp.read(src, (err, img) => {
+        jimp.read(cache[src] || src, (err, img) => {
             if (err) console.log(err)
 
-            cache.count = (cache.count || 0) + 1
-            if(cache.count <= 10) cache[src] = img
+            if(!cache[src]) updateCache(src, img)
 
-            manipulateImg(img.clone(), font, text, blurScale,res)
+            manipulateImg(img.clone(), font, text, blurScale, res)
         })
     })
 })
+
+function updateCache(src, img) {
+    let cacheSrcs = Object.keys(cache)
+
+    if (cacheSrcs.length === 10) {
+        let earliestCache = cacheSrcs[0] // JS objects preserve insertion order
+        
+        console.log('removing ' +earliestCache)
+        console.log('adding ' + src)
+
+        delete cache[earliestCache]
+    }
+
+    cache[src] = img
+}
 
 function manipulateImg(img, font, text, blurScale, res) {
     img.print(font, 0, 0, text)
