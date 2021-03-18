@@ -22,17 +22,17 @@
             }).then((res) => {
                 if (res.status === 403) {
                     localStorage.clear()
-                    window.location = '/login.html'
+                    window.location = '/chatroom/login.html'
                 }
             })
         } else {
-            window.location = '/login.html'
+            window.location = '/chatroom/login.html'
         }
     }
 
     function enterChatroom() {
         localStorage.setItem('chatroom_name', document.querySelector('#chatroom_name').value)
-        window.location = '/chatroom.html'
+        window.location = '/chatroom/chatroom.html'
     }
 
     checkAuth()

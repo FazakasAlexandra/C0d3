@@ -21,12 +21,12 @@
     const messagesContainer = document.querySelector('#messages')
     let user = JSON.parse(localStorage.getItem('usersession'))
 
-    if (!chatroomName) window.location = '/index.html'
+    if (!chatroomName) window.location = '/chatroom/index.html'
     document.querySelector('h1').innerText = `chatroom ${chatroomName}`
 
     function redirectLogIn() {
         localStorage.clear()
-        window.location = '\login.html'
+        window.location = '/chatroom/login.html'
     }
 
     function postMessage() {

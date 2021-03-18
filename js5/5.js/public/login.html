@@ -8,7 +8,7 @@
         <form>
             <header>
                 <h1>You must be logged in</h1>
-                <p>No account ? You can <a href="/signup.html">Sign Up</a> instead</p>
+                <p>No account ? You can <a href="/chatroom/signup.html">Sign Up</a> instead</p>
             </header>
             <input type="text" id="username" placeholder="user name">
             <input type="password" id="password" placeholder="password">
@@ -37,7 +37,7 @@
                 return
             }
             localStorage.setItem('usersession', JSON.stringify(data))
-            window.location = '/index.html'
+            window.location = '/chatroom/index.html'
         })
     }
 </script>
