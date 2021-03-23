@@ -8,80 +8,53 @@
         <form>
             <h1>Chatroom</h1>
             <input type="text" id="message" placeholder="message">
-            <button type="button" class="submit" onclick="postMessage()">Submit</button>
+            <button type="button" class="submit">Submit</button>
         </form>
     </section>
 
     <div id="messages"></div>
 
 </body>
+<script type="module" src="./utilities.js"></script>
+<script type="module">
+    import { db } from './utilities.js';
 
-<script>
-    const chatroomName = localStorage.getItem('chatroom_name')
-    const messagesContainer = document.querySelector('#messages')
-    let user = JSON.parse(localStorage.getItem('usersession'))
+    const chatroomName = localStorage.getItem('chatroom_name');
+    if (!chatroomName) window.location = '/chatroom/index.html';
 
-    if (!chatroomName) window.location = '/chatroom/index.html'
-    document.querySelector('h1').innerText = `chatroom ${chatroomName}`
+    let jwt = localStorage.getItem('jwt');
 
-    function redirectLogIn() {
-        localStorage.clear()
-        window.location = '/chatroom/login.html'
-    }
+    const messagesContainer = document.querySelector('#messages');
+
+    document.querySelector('h1').innerText = `chatroom ${chatroomName}`;
+    document.querySelector('.submit').addEventListener('click', () => postMessage());
 
     function postMessage() {
-        const message = document.querySelector('#message').value
-
-        fetch(`/api/${chatroomName}/messages`, {
-            headers: {
-                'content-type': 'application/json',
-                Authorization: `Bearer ${user.jwt}`
-            },
-            method: "POST",
-            body: JSON.stringify({
-                message: message
-            })
-        })
-            .then((res) => {
-                if (res.status === 403) {
-                    redirectLogIn()
-                } else {
-                    return res.json()
-                }
-            })
-            .then(body => {
-                console.log(body)
-                messagesContainer.innerHTML = `<section><article><aside><i>${body.user.username}</i><p>${message}</p></aside></article></section>${messagesContainer.innerHTML}`
-            })
+        db.chatroom.post(jwt, chatroomName, { message: document.querySelector('#message').value }).then(body => renderMessage(body))
     }
 
-    function fetchMessages() {
-        fetch(`/api/${chatroomName}/messages`, {
-            headers: {
-                Authorization: `Bearer ${user.jwt}`
-            }
-        })
-            .then((res) => {
-                if (res.status === 403) {
-                    redirectLogIn()
-                } else {
-                    return res.json()
-                }
-            })
-            .then((body) => {
-                messagesContainer.innerHTML = body.reduce((acc, data) => {
-                    return `${acc}<section><article><aside><i>${data.username}</i><p>${data.message}</p></aside></article></section>`
-                }, '')
-            })
+    function renderMessage(body) {
+        messagesContainer.innerHTML = `<section><article><aside><i>${body.username}</i><p>${body.message}</p></aside></article></section>${messagesContainer.innerHTML}`
+    }
+
+    function renderMessages(body) {
+        messagesContainer.innerHTML = body.reduce((acc, data) => {
+            return `${acc}<section><article><aside><i>${data.username}</i><p>${data.message}</p></aside></article></section>`
+        }, '')
+    };
+
+    function getMessages() {
+        db.chatroom.get(jwt, chatroomName).then(body => renderMessages(body))
     }
 
     function updateChatroom() {
         setTimeout(() => {
-            user = JSON.parse(localStorage.getItem('usersession'))
-            fetchMessages()
+            jwt = localStorage.getItem('jwt')
+            getMessages()
             updateChatroom()
         }, 1000)
     }
+
+    getMessages()
     updateChatroom()
-    fetchMessages()
 </script>

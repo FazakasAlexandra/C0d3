@@ -18,26 +18,18 @@
         </form>
     </section>
 </body>
-<script>
-    function signup() {
-        fetch('https://js5.c0d3.com/auth/api/users', {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({
+<script type="module" src="./utilities.js"></script>
+<script type="module">
+    import { register } from './utilities.js';
+
+    (function () {
+        document.querySelector('.submit').addEventListener('click', () => {
+            register('auth/api/users', {
                 password: btoa(document.querySelector('#password').value),
                 username: document.querySelector('#username').value,
                 email: document.querySelector('#email').value
             })
-        }).then(res => res.json()).then((data) => {
-            if (data.error) {
-                document.querySelector('#error').innerText = data.error.message
-                return
-            }
-            localStorage.setItem('usersession', JSON.stringify(data))
-            window.location = '/chatroom/index.html'
         })
-    }
+    })()
+
 </script>

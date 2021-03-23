@@ -13,31 +13,23 @@
             <input type="text" id="username" placeholder="user name">
             <input type="password" id="password" placeholder="password">
             <p style="color:red" id="error"></p>
-            <button type="button" class="submit" onclick="login()">Submit</button>
+            <button type="button" class="submit">Submit</button>
         </form>
     </section>
 
 </body>
-<script>
 
-    function login() {
-        fetch('https://js5.c0d3.com/auth/api/sessions', {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({
+<script type="module" src="./utilities.js"></script>
+<script type="module">
+    import { register } from './utilities.js';
+
+    (function () {
+        document.querySelector('.submit').addEventListener('click', () => {
+            register('auth/api/sessions', {
                 password: btoa(document.querySelector('#password').value),
                 username: document.querySelector('#username').value
-            })
-        }).then(res => res.json()).then((data) => {
-            if (data.error) {
-                document.querySelector('#error').innerText = data.error.message
-                return
-            }
-            localStorage.setItem('usersession', JSON.stringify(data))
-            window.location = '/chatroom/index.html'
+            });
         })
-    }
+    })()
+
 </script>

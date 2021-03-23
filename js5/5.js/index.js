@@ -42,14 +42,12 @@ app.get('/api/:room/messages', (req, res) => {
 })
 
 app.post('/api/:room/messages', (req, res) => {
-    if (!data[req.params.room]) {
-        data[req.params.room] = [{ message: req.body.message, username: req.user.username }]
-        res.status(201).json({ user: req.user, message: 'message added !' })
-        return
-    }
+    const room = req.params.room
+    const username = req.user.username
+    const message = req.body.message
 
-    data[req.params.room].unshift({ message: req.body.message, username: req.user.username })
-    res.status(201).json({ user: req.user, message: 'message added !' })
+    data[room] = [{username, message}, ...(data[room] || [])] 
+    res.status(201).json(data[room][0])
 })
 
 app.listen(3000)
