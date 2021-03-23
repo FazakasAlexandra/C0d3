@@ -15,9 +15,9 @@
     <div id="messages"></div>
 
 </body>
-<script type="module" src="./utilities.js"></script>
+<script type="module" src="/utilities"></script>
 <script type="module">
-    import { db } from './utilities.js';
+    import { db } from '/utilities';
 
     const chatroomName = localStorage.getItem('chatroom_name');
     if (!chatroomName) window.location = '/chatroom/index.html';

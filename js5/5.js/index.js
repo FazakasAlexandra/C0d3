@@ -1,3 +1,5 @@
+// https://ale.freedomains.dev/chatroom
+
 const express = require('express')
 const app = express()
 const cors = require('cors');
@@ -22,6 +24,11 @@ checkJWT = (req, res, next) => {
             next()
         })
 }
+
+app.get('/utilities', (req, res) => {
+    res.type('.js')
+    res.sendFile(path.join(__dirname + '/public/utilities.js'))
+})
 
 app.get('/chatroom', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/index.html'))

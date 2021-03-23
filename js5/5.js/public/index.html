@@ -12,9 +12,9 @@
         </form>
     </section>
 </body>
-<script type="module" src="./utilities.js"></script>
+<script type="module" src="/utilities"></script>
 <script type="module">
-    import { db } from './utilities.js';
+    import { db } from '/utilities';
 
     (function checkAuth() {
         db.session(localStorage.getItem('jwt'), enterChatroomEvent)
