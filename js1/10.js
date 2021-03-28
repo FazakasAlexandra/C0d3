@@ -21,10 +21,8 @@
 const solution = (str, fun) => {
   let i = 0
   return () => {
-    fun(str[i])
+    fun(str[i % str.length])
     i++
-    if(i === str.length)
-      i = 0
    }
 }
 
