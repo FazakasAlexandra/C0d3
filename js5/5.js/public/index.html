@@ -1,0 +1,29 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/andybrewer/mvp/mvp.css">
+    <title>Chatroom js5/5</title>
+</head>
+
+<body>
+    <section>
+        <form>
+            <h1>Enter room name</h1>
+            <input type="text" id="chatroom_name">
+            <button type="button" class="submit">Submit</button>
+        </form>
+    </section>
+</body>
+<script type="module" src="/utilities"></script>
+<script type="module">
+    import { db } from '/utilities';
+
+    (function checkAuth() {
+        db.session(localStorage.getItem('jwt'), enterChatroomEvent)
+    })()
+
+    function enterChatroomEvent() {
+        document.querySelector('.submit').addEventListener('click', () => {
+            localStorage.setItem('chatroom_name', document.querySelector('#chatroom_name').value)
+            window.location = '/chatroom/chatroom.html'
+        })
+    }
+</script>

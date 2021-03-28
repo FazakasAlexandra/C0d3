@@ -1,0 +1,60 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/andybrewer/mvp/mvp.css">
+    <title>Chatroom js5/5</title>
+</head>
+
+<body>
+    <section>
+        <form>
+            <h1>Chatroom</h1>
+            <input type="text" id="message" placeholder="message">
+            <button type="button" class="submit">Submit</button>
+        </form>
+    </section>
+
+    <div id="messages"></div>
+
+</body>
+<script type="module" src="/utilities"></script>
+<script type="module">
+    import { db } from '/utilities';
+
+    const chatroomName = localStorage.getItem('chatroom_name');
+    if (!chatroomName) window.location = '/chatroom/index.html';
+
+    let jwt = localStorage.getItem('jwt');
+
+    const messagesContainer = document.querySelector('#messages');
+
+    document.querySelector('h1').innerText = `chatroom ${chatroomName}`;
+    document.querySelector('.submit').addEventListener('click', () => postMessage());
+
+    function postMessage() {
+        db.chatroom.post(jwt, chatroomName, { message: document.querySelector('#message').value }).then(body => renderMessage(body))
+    }
+
+    function renderMessage(body) {
+        messagesContainer.innerHTML = `<section><article><aside><i>${body.username}</i><p>${body.message}</p></aside></article></section>${messagesContainer.innerHTML}`
+    }
+
+    function renderMessages(body) {
+        messagesContainer.innerHTML = body.reduce((acc, data) => {
+            return `${acc}<section><article><aside><i>${data.username}</i><p>${data.message}</p></aside></article></section>`
+        }, '')
+    };
+
+    function getMessages() {
+        db.chatroom.get(jwt, chatroomName).then(body => renderMessages(body))
+    }
+
+    function updateChatroom() {
+        setTimeout(() => {
+            jwt = localStorage.getItem('jwt')
+            getMessages()
+            updateChatroom()
+        }, 1000)
+    }
+
+    getMessages()
+    updateChatroom()
+</script>

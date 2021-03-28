@@ -1,0 +1,35 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/andybrewer/mvp/mvp.css">
+    <title>Chatroom js5/5</title>
+</head>
+
+<body>
+    <section>
+        <form>
+            <header>
+                <h1>You must be logged in</h1>
+                <p>Already have an account ? You can <a href="/chatroom/login.html">Login</a> instead</p>
+            </header>
+            <input type="text" id="email" placeholder="email">
+            <input type="text" id="username" placeholder="user name">
+            <input type="password" id="password" placeholder="password">
+            <p style="color:red" id="error"></p>
+            <button type="button" class="submit" onclick="signup()">Submit</button>
+        </form>
+    </section>
+</body>
+<script type="module" src="/utilities"></script>
+<script type="module">
+    import { register } from '/utilities';
+
+    (function () {
+        document.querySelector('.submit').addEventListener('click', () => {
+            register('auth/api/users', {
+                password: btoa(document.querySelector('#password').value),
+                username: document.querySelector('#username').value,
+                email: document.querySelector('#email').value
+            })
+        })
+    })()
+
+</script>
