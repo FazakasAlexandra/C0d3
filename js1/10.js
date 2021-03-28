@@ -16,18 +16,10 @@
  * @param {function} fun
  * @returns {function}
  * 
-fun = solution('hel2', (e) => {
-  console.log(e)
-})
-fun() // prints-> 'h'
-fun() // prints-> 'e'
-fun() // prints-> 'l'
-fun() // prints-> '2'
-fun() // prints-> 'h'
-fun() // prints-> 'e'
  */
 
-const solution = (str, fun, i = 0) => {
+const solution = (str, fun) => {
+  let i = 0
   return () => {
     fun(str[i % str.length])
     i++
