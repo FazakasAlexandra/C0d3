@@ -1,0 +1,21 @@
+[{
+    "username": "ale",
+    "email": "ale@gmail.com",
+    "password": "$2b$05$FxYT0OVNioS4jvXfiwcr5uxJakMfiybeEfQqE/aCk7UYvDcYKWkUW",
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.YWxl.XmqVL-KB1Bkw6ImtYiYPfSfszrASmE7wzxfjmFT8xO4",
+    "id": 1617014696897
+}, {
+    "username": "mango",
+    "email": "mymango@gmail.com",
+    "password": "$2b$05$6EwNs6Zijh2bmzVo/FmQkunwPIoasHgXTSkhrBMmPbiHnxAqij3He",
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.bWFuZ28.NXqFZkrIxtB2Bn4g2ipF_UMndG2hqTeL1nRUh3m34YI",
+    "id": 1617014773666
+}, {
+    "username": "Mr. Pineapple",
+    "password": "pineapple2021",
+    "email": "mypin@gmail.com",
+    "birthDate": "1920/08/18",
+    "hasedPassword": "$2b$05$IsPtffhy7Dmw8q6rqSB6a./45I6Y1pl0bldpIrYUDXRuZwghKWiUK",
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.TXIuIFBpbmVhcHBsZQ.C6um9PMvTC5TX1XL9ILsxPGmeIMwE7WLCRb7UgiTdrE",
+    "id": 1617014927946
+}]
