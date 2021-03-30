@@ -8,9 +8,7 @@ POST
 */
 
 const path = require('path')
-// makes fs methods async
-const Promise = require('bluebird');
-const fs = Promise.promisifyAll(require('fs'));
+const fs = require('fs/promises');
 // validator for express
 const { check, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
@@ -25,7 +23,7 @@ const secretPassword = "I am a secret password"
 
 const users = {
     get: () => {
-        return fs.readFileAsync('users.json').then(file => JSON.parse(file))
+        return fs.readFile('users.json').then(file => JSON.parse(file))
     },
     find: (criteria, value) => {
         return users.get()
@@ -54,26 +52,28 @@ app.get('/authentication/api/session', (req, res) => {
         if (!username) return res.status(401).send({ errors: [{ message: 'Not authorised' }] })
 
         users.find('username', username).then(user => {
+            delete user.password
             res.status(200).send(user)
         })
     })
 })
 
 app.post('/authentication/api/session', (req, res) => {
-    const { username, email, password } = req.body
-
-    const searchCriteria = username ? 'username' : 'email'
-
-    users.find(searchCriteria, (username || email))
-        .then(user => {
-            if (!user) return res.status(400).send({ errors: [{ message: 'User not found' }] })
-
-            bcrypt.compare(password, user.password, (err, isSame) => {
-                if (!isSame) return res.status(400).send({ errors: [{ message: 'Wrong password' }] })
-                res.status(200).send(user)
-            })
-        })
-})
+     const { username, email, password } = req.body
+ 
+     const searchCriteria = username ? 'username' : 'email'
+ 
+     users.find(searchCriteria, (username || email))
+         .then(user => {
+             if (!user) return res.status(400).send({ errors: [{ message: 'User not found' }] })
+ 
+             bcrypt.compare(password, user.password, (err, isSame) => {
+                 if (!isSame) return res.status(400).send({ errors: [{ message: 'Wrong password' }] })
+                 delete user.password
+                 res.status(200).send(user)
+             })
+         })
+ })
 
 app.post('/authentication/api/users',
     check('password')
@@ -92,14 +92,15 @@ app.post('/authentication/api/users',
         .withMessage('Username can contains only letters and numbers')
         .custom((username) => users.isDuplicate('username', username)),
     (req, res) => {
-        const { username, password } = req.body
+        let { username, password } = req.body
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-        bcrypt.hash(password, 5, (err, hasedPassword) => {
+        bcrypt.hash(password, 5, (err, hashedPassword) => {
             const token = jwt.sign(username, secretPassword)
-            users.post({ ...req.body, hasedPassword, jwt: token });
+            req.body.password = hashedPassword
+            users.post({ ...req.body, jwt: token });
             return res.status(201).json({ message: 'user created' })
         })
     })
