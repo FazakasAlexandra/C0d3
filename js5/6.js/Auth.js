@@ -22,7 +22,7 @@ const Auth = {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': jwt
+                'Authorization': `Bearer ${jwt}`
             }
         }).then(res => res.json())
     },

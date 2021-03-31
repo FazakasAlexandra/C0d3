@@ -48,7 +48,8 @@ const users = {
 }
 
 app.get('/authentication/api/session', (req, res) => {
-    jwt.verify(req.get('Authorization'), secretPassword, (err, username) => {
+    const token = req.get('Authorization').split(" ")[1];
+    jwt.verify(token, secretPassword, (err, username) => {
         if (!username) return res.status(401).send({ errors: [{ message: 'Not authorised' }] })
 
         users.find('username', username).then(user => {
