@@ -1,0 +1,14 @@
+[{
+    "username": "ale",
+    "password": "$2b$05$5SANLIASHP/aeZ.yjNrQU.I2EuEQvaZi.ooXLp9ig1BFGxtmcu7A.",
+    "email": "ale@gmail.com",
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.YWxl.XmqVL-KB1Bkw6ImtYiYPfSfszrASmE7wzxfjmFT8xO4",
+    "id": 1617119351807
+}, {
+    "username": "Mango",
+    "password": "$2b$05$UNKo7f3TRm1AgYzYxesAtegKKOxt7eoGxPXXLjpP9PHYI8ylrnIEm",
+    "email": "mymango@gmail.com",
+    "birthDate": 1902,
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.TWFuZ28.j1ACe19STUt7G01LcCfwTRAtf0KXQvdi3IsjpKOFkn4",
+    "id": 1617119870045
+}]
