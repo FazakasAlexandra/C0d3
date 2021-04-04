@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/andybrewer/mvp/mvp.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs</title>
+    <style>
+        img {
+            width: 400px;
+        }
+
+        body {
+            background-color: #79bdb7;
+        }
+
+        aside {
+            background-color: white;
+            box-shadow: none !important;
+            height: fit-content;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="app"></section>
+</body>
+<script>
+    const id = window.location.href.split('/')[5]
+    let isRendered = false
+    let incompleteJobsIds = {
+        counter: 0
+    }
+
+    function fetchJobs() {
+        fetch(`/api/job/${id}`)
+            .then(res => res.json())
+            .then((res) => {
+                if (!isRendered) render(res)
+
+                if (incompleteJobsIds.counter) updateText(res)
+
+                if (incompleteJobsIds.counter) {
+                    setTimeout(() => {
+                        fetchJobs()
+                    }, 1000)
+                }
+            })
+    }
+
+    function render(data) {
+        data.forEach((job, idx) => {
+            if (!job.txt) {
+                incompleteJobsIds[job.id] = true
+                incompleteJobsIds.counter += 1
+            }
+            document.querySelector('.app').innerHTML += `<aside>
+                  <img src="/api/assets/${job.src}">
+                  <p id="text-${job.id}">${job.txt ? job.txt : 'extracting the text...'}</p>
+                </aside>`
+        })
+        isRendered = true
+    }
+
+    function updateText(data) {
+        data.forEach(job => {
+            if (job.txt && incompleteJobsIds[job.id]) {
+                document.querySelector(`#text-${job.id}`).innerText = job.txt
+                delete incompleteJobsIds[job.id]
+                incompleteJobsIds.counter -= 1
+            }
+        })
+    }
+
+    fetchJobs()
+
+</script>
+
+</html>

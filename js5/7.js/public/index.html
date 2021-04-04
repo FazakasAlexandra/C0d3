@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/andybrewer/mvp/mvp.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image text extraction</title>
+</head>
+<style>
+    body {
+        background-color: #79bdb7;
+    }
+    a{
+        color: #79bdb7 !important;
+    }
+
+    img {
+        width: 600px;
+    }
+
+    h1 {
+        color: white;
+        position: absolute;
+        top: 47%;
+        font-size: 2.5rem;
+        margin: 0;
+        text-shadow: 2px 3px 2px #090808;
+        text-transform: uppercase;
+    }
+
+    #app {
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: 0 auto;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    span {
+        color: #ec5e4a;
+    }
+</style>
+
+<body>
+    <div id="app">
+        <h1>Drag files here</h1>
+        <img src="http://afazakas.com/images/target_no_arrow.png" id="target" alt="target">
+    </div>
+</body>
+<script>
+    const app = document.querySelector('#app')
+    const img = document.querySelector('img')
+    const h1 = document.querySelector('h1')
+
+    function changeLooks(color, text, src) {
+        document.body.style.backgroundColor = color
+        h1.innerHTML = text
+        img.src = `http://afazakas.com/images/${src}`
+    }
+
+    app.ondragover = function (e) {
+        e.stopPropagation()
+        e.preventDefault()
+        changeLooks("#b13e2d", `Drop <span>${e.dataTransfer.items.length}</span> files`, 'target.png')
+    }
+
+    app.ondragleave = function (e) {
+        e.stopPropagation()
+        e.preventDefault()
+        changeLooks("#79bdb7", "Drag files here", "target_no_arrow.png")
+    }
+
+    app.ondrop = function (e) {
+        e.stopPropagation()
+        e.preventDefault()
+        changeLooks("#79bdb7", "Drag files here", 'target.png')
+
+        const formData = new FormData()
+        Array.from(e.dataTransfer.files).forEach(image => {
+            formData.append('images', image, image.name)
+        });
+
+        postImages(formData)
+    }
+
+    function postImages(formData) {
+        fetch('/files', {
+            method: "POST",
+            body: formData
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                h1.innerHTML = `<a href="${res.url}">${res.url}</a>`
+            })
+    }
+</script>
+
+</html>
