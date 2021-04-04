@@ -10,7 +10,7 @@ var path = require('path');
 
 /*
 POST
-ale.freedomains.dev/textExtraction/filesfiles (upload files)
+ale.freedomains.dev/textExtraction/files (upload files)
 
 GET
 ale.freedomains.dev/textExtraction/api/upload (get the html that handles files drop)
