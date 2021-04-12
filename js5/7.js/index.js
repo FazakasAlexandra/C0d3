@@ -22,7 +22,7 @@ ale.freedomains.dev/textExtraction/api/assets/:fileName (get the uploaded files)
 const upload = multer({
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, './public/assets')
+            cb(null, path.join(__dirname, '/public/assets'))
         },
         filename: (req, file, cb) => {
             cb(null, `${Date.now()}-${file.originalname}`)
@@ -44,7 +44,7 @@ app.post('/files', upload.array('images'), (req, res) => {
             txt: null
         })
 
-        Tesseract.recognize(`./${image.path}`, 'eng').then(res => {
+        Tesseract.recognize(image.path, 'eng').then(res => {
             jobs[id][idx].txt = res.data.text
             console.log(jobs)
         })
