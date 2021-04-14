@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/andybrewer/mvp/mvp.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selfie Queen</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container.video {
+            width: fit-content;
+            height: fit-content;
+            align-items: center;
+        }
+
+        .container.pictures {
+            width: 360px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <header>
+            <h2>Selfie Queen</h2>
+            <p>Time to capture a good angle</p>
+        </header>
+        <section>
+            <aside class="container video">
+                <video id="video" width="360"></video>
+                <button>Take Selfie</button>
+            </aside>
+            <aside class="container pictures">
+                <canvas id="canvas" width="360" height="270"></canvas>
+                <details class="history">
+                    <div class="history-container"></div>
+                    <summary>Selfies history</summary>
+                </details>
+            </aside>
+        </section>
+    </main>
+</body>
+
+<script>
+    const video = document.querySelector('#video')
+    const canvas = document.querySelector('#canvas')
+    const button = document.querySelector('button')
+    const msg = document.querySelector('span')
+    const historyContainer = document.querySelector('.history-container')
+
+    navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+        .then(stream => {
+            video.srcObject = stream
+            video.play()
+    })
+
+    function getSelfiesHistory(){
+        fetch('/selfiequeen').then(res => res.json()).then((res)=>{
+            console.log(res)
+            historyContainer.innerHTML += res.reduce((acc, fileName) => {
+                return `${acc}<a href="http://localhost:3000/selfiequeen/${fileName}">${fileName}</a>`
+            }, "")
+        })
+    }
+
+    getSelfiesHistory()
+
+    button.onclick = e => {
+        const context = canvas.getContext('2d')
+        context.drawImage(video, 0, 0, 360, 270)
+        const base64Data = canvas.toDataURL().replace(/^data:image\/png;base64,/, '')
+    
+        fetch('/selfiequeen', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ img: base64Data }) 
+        })
+            .then(res => res.json())
+            .then(res => {
+                console.log(res)
+                historyContainer.innerHTML += `<a href="http://localhost:3000/selfiequeen/${res.imgName}">${res.imgName}</a>`
+            })
+    }
+</script>
+
+</html>
