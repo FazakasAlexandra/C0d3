@@ -64,7 +64,7 @@
         fetch('/selfiequeen').then(res => res.json()).then((res)=>{
             console.log(res)
             historyContainer.innerHTML += res.reduce((acc, fileName) => {
-                return `${acc}<a href="http://localhost:3000/selfiequeen/${fileName}">${fileName}</a>`
+                return `${acc}<a href="/selfiequeen/${fileName}">${fileName}</a>`
             }, "")
         })
     }
@@ -86,7 +86,7 @@
             .then(res => res.json())
             .then(res => {
                 console.log(res)
-                historyContainer.innerHTML += `<a href="http://localhost:3000/selfiequeen/${res.imgName}">${res.imgName}</a>`
+                historyContainer.innerHTML += `<a href="/selfiequeen/${res.imgName}">${res.imgName}</a>`
             })
     }
 </script>
