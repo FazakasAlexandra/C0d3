@@ -8,6 +8,10 @@ app.use(express.json({limit: '10mb'}))
 const imgNames = []
 const assetsPath = path.join(__dirname, '/public/assets')
 
+
+//https://ale.freedomains.dev/selfiequeen 
+
+
 app.get('/selfiequeen', (req, res) => {
     fs.readdir(assetsPath, (err, data)=>{
         if(err) console.log(err)
