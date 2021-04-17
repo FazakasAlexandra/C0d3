@@ -6,7 +6,7 @@ const fs = require('fs')
 const multer = require('multer')
 app.use(express.json({ limit: '10mb' }))
 
-const users = [] // { { name: "ale", meme : "ale.jpg" } }
+const users = [] // [{ name: "ale", meme : "ale.jpg" }]
 
 
 // https://goodcitizendesign.com/memechat
