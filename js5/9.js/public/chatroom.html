@@ -128,10 +128,10 @@
                         }
                         return acc
                     }, '')
+                    
+                    if(!memes) resolve()
 
                     const images = Array.from(picsContainer.querySelectorAll('img'))
-
-                    if(!memes) resolve()
 
                     images.forEach(image => {
                         image.onload = () => {
